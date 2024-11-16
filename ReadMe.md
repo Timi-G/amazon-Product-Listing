@@ -54,7 +54,7 @@ To run the Django website:
 - Run command `npm run dev` in a terminal with (venv activated) to utilize _**daisyUI**_
 - Run `python manage.py runserver` in another terminal with venv activated to start the development server
 - Navigate to link _**localhost**_ on your browser (note that your **_localhost_** will display in terminal):
-  - A sample _localhost_ (which will direct to the homepage) looks link like this _http://127.0.0.1/8000_
+  - A sample _localhost_ link(which will direct to the homepage) looks like this _http://127.0.0.1/8000_
 - _localhost_/products will direct you to the products page
 - The search bar can also be used to search for products of brands already saved in the database.
 
