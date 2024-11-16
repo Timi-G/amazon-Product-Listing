@@ -22,7 +22,6 @@ class BrandAdmin(admin.ModelAdmin):
             # Trigger the scraping task for each selected brand
 
             self.message_user(request, f"Started scraping products for brand: {brand.name}", messages.INFO)
-            # scrape_amazon_products.delay(brand.name)
             scrape_amazon_product_list(brand.name)
             self.message_user(request, f"Finished scraping products for brand: {brand.name}", messages.INFO)
     scrape_products.short_description = "Scrape products for selected brands"
@@ -33,18 +32,18 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'asin', 'page', 'brand']
 
 # Task success handler
-# @signals.task_success.connect
-# def task_success_handler(sender=None, result=None, **kwargs):
-#     """
-#     Handle successful completion of a task and send a message to the user.
-#     """
-#     if result:
-#         from django.contrib.sessions.models import Session
-#         from django.contrib.auth.models import User
-#
-#         session = Session.objects.get(pk=kwargs["task_id"])
-#         user_id = session.get_decoded().get('_auth_user_id')
-#         user = User.objects.get(id=user_id)
-#
-#         # Send a success message to the user's session (Django message system)
-#         messages.add_message(user, messages.SUCCESS, result)
+@signals.task_success.connect
+def task_success_handler(sender=None, result=None, **kwargs):
+    """
+    Handle successful completion of a task and send a message to the user.
+    """
+    if result:
+        from django.contrib.sessions.models import Session
+        from django.contrib.auth.models import User
+
+        session = Session.objects.get(pk=kwargs["task_id"])
+        user_id = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(id=user_id)
+
+        # Send a success message to the user's session (Django message system)
+        messages.add_message(user, messages.SUCCESS, result)

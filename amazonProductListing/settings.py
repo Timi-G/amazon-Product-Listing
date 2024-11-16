@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'amazonbrands'
+    'django_celery_results',
+    'django_celery_beat',
+    'amazonbrands',
 ]
 
 MIDDLEWARE = [
@@ -116,13 +119,16 @@ USE_I18N = True
 USE_TZ = True
 
 # celery settings
+result_backend = 'redis://localhost/0'
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL of the Redis server
 CELERY_BEAT_SCHEDULE = {
     'scrape-products-every-6-hours': {
-        'task': 'amazon_scraper.tasks.scrape_amazon_products',
-        'schedule': 6 * 60 * 60,  # Run every 6 hours
+        'task': 'amazonbrands.tasks.scrape_amazon_products_for_all_brands',
+        'schedule': 6 * 60 * 60,  # Run every 6/24 hours
     },
 }
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

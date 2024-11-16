@@ -3,7 +3,19 @@ from celery import shared_task
 from .models import Brand, Product
 from amazonbrands.scraper import scrape_amazon_product_list
 
+
 @shared_task
+def scrape_amazon_products_for_all_brands():
+    """
+    Task to scrape Amazon products for each brand in the database.
+    """
+    # Retrieve all brands
+    brand_names = Brand.objects.values_list('name', flat=True)
+
+    for brand_name in brand_names:
+        # Call a helper function to scrape products for the specific brand
+        scrape_amazon_products(brand_name)
+
 def scrape_amazon_products(brand_name):
     products = scrape_amazon_product_list(brand_name)
     brand, created = Brand.objects.get_or_create(name=brand_name)
@@ -18,13 +30,7 @@ def scrape_amazon_products(brand_name):
                 name=product.get('name'),
                 asin=asin,
                 page=product.get('page'),
-                image_url=product.get('image_url'),
+                image=product.get('image_url'),
                 brand=brand
             )
             new_product.save()
-        print(product)
-
-if __name__ == "__main__":
-    import sys
-    brand_name = sys.argv[1]
-    scrape_amazon_products(brand_name)
