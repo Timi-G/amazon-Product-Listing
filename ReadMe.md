@@ -27,7 +27,6 @@ To view products of a brand with minimal yet beautiful frontend, setup your syst
   - Run `python manage.py runserver` in terminal
   - Navigate to link _**localhost**/admin_ on your browser (note that your **_localhost_** will display in terminal)
   - Create new brands in Brands like Nike, Microsoft etc
-  - For manual scrape operations, use the actions navbar at the top of Admin Brands page to scrape products of specific brands.
 - To utilize scheduling and periodic tasking:
   - First start your broker. The redis application which is the broker used for this project has been made available already, simply run it this way:
     - Navigate to the root directory in your terminal
@@ -69,3 +68,5 @@ You can use the credentials below to create a easy-to-remember Superuser
 - Username: admin
 - Email: admin@mail.com
 - Password: admin
+
+#### Note:  For manual scrape operations, use the actions navbar at the top of Admin Brands page in the Admin Panel to scrape products of specific brands.
