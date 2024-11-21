@@ -3,7 +3,7 @@
 ## How to set up and run the project locally (including Celery and broker setup).
 Ensure venv is activated
 - Navigate to Django root project directory in Windows Powershell
-- If venv (virtual environment) is not created,follow instructions to do so [here](https://docs.python.org/3/library/venv.html)
+- If venv (virtual environment) is not created, follow instructions to do so [here](https://docs.python.org/3/library/venv.html)
 - Activate venv with .venv/Scripts/activate
 - Install Django with `pip install Django`
 - Install celery with `pip install celery`
@@ -14,7 +14,7 @@ Ensure venv is activated
 - After all installations, apply necessary migrations for Django project with `python manage.py migrate`
 
 To view products of a brand with minimal yet beautiful frontend, setup your system as follows:
-+ Ensure node.js is installed, node.js version used here is v
++ Ensure node.js is installed, node.js version used for this project is v17.3.1
 + Install TailwindCSS, run the following in your terminal
   + `npm install -D tailwindcss`
   + `npx tailwindcss init`
@@ -58,11 +58,11 @@ To run the Django website:
 - The search bar can also be used to search for products of brands already saved in the database.
 
 ## Any assumptions or design decisions.
-- Code was written with Python 3.12 but should run successfully with any Python 3.1X version
+- Code was written with Python 3.12 and should run successfully on any Python 3.1X version
 - Django website was developed with Django 5.1.2
-- A large number of products do not have readily available sku, scraping for this info was jettisoned
 - It is assumed that this Django project will be run in a Windows environment. However, for Linux most of the steps are similar except changes to some commands like the use of `sudo`.
 - The celery documentation contains helpful instructions to run celery on Linux environments.
+- A large number of products do not have readily available sku, scraping for this info was jettisoned
 
 ### Admin Panel
 You can use the credentials below to create a easy-to-remember Superuser
