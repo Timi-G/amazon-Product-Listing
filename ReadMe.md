@@ -1,14 +1,16 @@
 # Amazon Product Listing
 
 ## How to set up and run the project locally (including Celery and broker setup).
-Ensure venv is activated. 
+Ensure venv is activated
 - Navigate to Django root project directory in Windows Powershell
 - Activate venv with .venv/Scripts/activate
+- Install Django withy `pip install Django`
 - Install celery with `pip install celery`
 - Install results with `pip install django-celery-results`
 - Install results with `pip install django-celery-beat`
 - Install sqlalchemy with `pip install sqlachemy`
-- Install broker with `pip instal redis-server`
+- Install broker with `pip install redis`
+- After all installations, apply necessary migrations for Django project with `python manage.py migrate`
 
 To view products of a brand with minimal yet beautiful frontend, setup your system as follows:
 + Ensure node.js is installed, node.js version used here is v
@@ -20,7 +22,7 @@ To view products of a brand with minimal yet beautiful frontend, setup your syst
 
 ## Instructions for scheduling and managing the periodic tasks.
 - Ensure to create a new superuser account with `python manage.py createsuperuser`
-- Go to admin panel for your Django website:
+- How to go to admin panel for your Django website:
   - Run `python manage.py runserver` in terminal
   - Navigate to link _**localhost**/admin_ on your browser (note that your **_localhost_** will display in terminal)
   - Create new brands in Brands like Nike, Microsoft etc
@@ -57,8 +59,9 @@ To run the Django website:
   - A sample _localhost_ link(which will direct to the homepage) looks like this _http://127.0.0.1/8000_
 - _localhost_/products will direct you to the products page
 - The search bar can also be used to search for products of brands already saved in the database.
-
+'
 ### Admin Panel
+You can use the credentials below to create a easy-to-remember Superuser
 - Username: admin
 - Email: admin@mail.com
 - Password: admin
