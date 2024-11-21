@@ -3,6 +3,7 @@
 ## How to set up and run the project locally (including Celery and broker setup).
 Ensure venv is activated
 - Navigate to Django root project directory in Windows Powershell
+- If venv (virtual environment) is not created,follow instructions to do so [here](https://docs.python.org/3/library/venv.html)
 - Activate venv with .venv/Scripts/activate
 - Install Django with `pip install Django`
 - Install celery with `pip install celery`
@@ -47,10 +48,6 @@ To view products of a brand with minimal yet beautiful frontend, setup your syst
 - To get high-quality image url for each product, the scraper accesses each product page for products of a brand and gets the image url
 - Information of the saved product is saved to the database
 
-## Any assumptions or design decisions.
-- A large number of products do not have readily available sku, scraping for this info was jettisoned
-- It is assumed that this Django project will be run in a Windows environment. However, for Linux most of the steps are similar except changes to commands like the use of `sudo`. The celery documentation is helpful instructions to run Linux environments.
-
 ## How To Run Code and View Frontend
 To run the Django website:
 - Run command `npm run dev` in a terminal with (venv activated) to utilize _**daisyUI**_
@@ -59,7 +56,14 @@ To run the Django website:
   - A sample _localhost_ link(which will direct to the homepage) looks like this _http://127.0.0.1/8000_
 - _localhost_/products will direct you to the products page
 - The search bar can also be used to search for products of brands already saved in the database.
-'
+
+## Any assumptions or design decisions.
+- Code was written with Python 3.12 but should run successfully with any Python 3.1X version
+- Django website was developed with Django 5.1.2
+- A large number of products do not have readily available sku, scraping for this info was jettisoned
+- It is assumed that this Django project will be run in a Windows environment. However, for Linux most of the steps are similar except changes to some commands like the use of `sudo`.
+- The celery documentation contains helpful instructions to run celery on Linux environments.
+
 ### Admin Panel
 You can use the credentials below to create a easy-to-remember Superuser
 - Username: admin
