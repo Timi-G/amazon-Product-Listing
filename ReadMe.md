@@ -4,7 +4,7 @@
 Ensure venv is activated
 - Navigate to Django root project directory in Windows Powershell
 - Activate venv with .venv/Scripts/activate
-- Install Django withy `pip install Django`
+- Install Django with `pip install Django`
 - Install celery with `pip install celery`
 - Install results with `pip install django-celery-results`
 - Install results with `pip install django-celery-beat`
