@@ -1,7 +1,7 @@
 import asyncio
 import random
 import re
-import time
+from time import sleep
 import urllib.parse
 
 import requests
@@ -30,13 +30,13 @@ def scrape_amazon_product_list(brand_name):
         for _ in range(5):
             header = random.choice(headers)
             try:
-                # 1 get brand page
+                # 1. Get brand page
                 brand_page = get_brand_page(brand_name, header, str(page_no))
 
-                #2 get all products in brand page
+                # 2. Get all products in brand page
                 if brand_page.status_code == 200:
                     soup = BeautifulSoup(brand_page.content, "html.parser")
-                    # 3 get href of products
+                    # 3. Get href of products
                     # Find all product containers (this selector may vary)
                     product_tags = soup.find_all('a', {
                         'class': 'a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal'
@@ -46,11 +46,11 @@ def scrape_amazon_product_list(brand_name):
                 else:
                     return products
             except:
-                time.sleep(2)
+                sleep(2)
 
-        # pagination
+        # Pagination
         page_no += 1
-        # 4 go to each product page
+        # 4. Go to each product page
         for product_tag in product_tags:
             for _ in range(5):
                 header = random.choice(headers)
@@ -60,7 +60,7 @@ def scrape_amazon_product_list(brand_name):
                 # if product_page.status_code == 200:
                 product_page = BeautifulSoup(product_page.content, "html.parser")
                 try:
-                    # 5 scrape product information
+                    # 5. Scrape product information
                     product_info = re.split('[/\\\\]', product_link)
                     # name = product_page.find("span", {"class": "a-size-large product-title-word-break"}).get_text(strip=True)
                     name = product_info[3]
@@ -74,9 +74,8 @@ def scrape_amazon_product_list(brand_name):
                     image_url=product_page.find("div",{"class":"imgTagWrapper"}).find("img")['src']
 
                     # image_url = product_page.find("ul", {"class":"a-unordered-list a-nostyle a-horizontal list maintain-height"}).find("img")['src']
-                    # print("image url", image_url)
-                    # print(" ")
-                    # update product information list
+                    # print(f"image url {image_url}\n")
+                    # Update product information list
                     products.append({
                         'name': name,
                         'asin': asin,
@@ -86,11 +85,11 @@ def scrape_amazon_product_list(brand_name):
                     break
                 except IndexError:
                     # print('Got Index Error')
-                    time.sleep(2)
+                    sleep(2)
                 except AttributeError:
                     # print('Got Attribute Error')
-                    time.sleep(2)
-            # 6 repeat from #4
+                    sleep(2)
+            # 6. Repeat from step 4
 
 def extract_https_url(link):
     # Parse the URL to access its query parameters
@@ -115,7 +114,7 @@ def get_brand_page(brand,header,page_no):
     return response
 
 def get_product_page(product_href,headers):
-    # add protocol, domain and subdomain to only product links that don't have a full address
+    # Add protocol, domain, and subdomain to only product links that don't have a full address
     if "sspa" in product_href:
         product_url = extract_https_url(product_href)
     elif "aax-us-iad" in product_href:
@@ -123,7 +122,7 @@ def get_product_page(product_href,headers):
         product_url = "https://www" + product_url.split("www")[-1]
     else:
         product_url = "https://www.amazon.com" + product_href
-    # handle links that have prefixes e.g. links of sponsored product posts
+    # Handle links that have prefixes e.g. links of sponsored product posts
     response = requests.get(product_url, headers=headers)
     return product_url, response
 
