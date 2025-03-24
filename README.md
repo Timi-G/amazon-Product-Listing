@@ -26,9 +26,14 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
   - Enter in the link `localhost/admin` into your browser (note that your localhost will display in terminal).
   - Create new brands in 'Brands' like Nike, Microsoft, et cetera.
 - To utilize scheduling and periodic tasking:
-  - First, start your broker. The redis application — which is the broker used for this project — has already been made available; simply run it this way:
-    - Navigate to the root directory in your terminal.
-    - Run the command `./Redis-x64-3.0.504/redis-server`.
+  - Windows
+    - First, start your broker. The redis application — which is the broker used for this project — has already been made available; simply run it this way:
+      - Navigate to the root directory in your terminal.
+      - Run the command `./Redis-x64-3.0.504/redis-server`.
+  - Linux
+    - Kindly follow the steps in the official [redis website](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/)
+    - After successful installation, in case you are unable to start redis with `sudo` command, simply type `redis-server` in your terminal and enter to start the server.
+    - If redis still doesn't start after the above steps, maybe try checking your Linux distribution or switch to another os.
   - To start the celery worker:
     - Open another terminal or Windows PowerShell with venv activated (see how to activate venv in the previous section).
     - Ensure you are in the root directory `amazonProductListing` and start celery with the command `celery -A amazonProductListing worker -l info`.
@@ -57,9 +62,9 @@ To run the Django website:
 ## Any assumptions or design decisions
 - The code was written with Python 3.12 and should run successfully on any Python 3.1x version.
 - The Django website was developed with Django 5.1.2.
-- It is assumed that this Django project will be run in a Windows environment. However, for Linux, most of the steps are similar, except changes to some commands like the use of `sudo`.
+- It is assumed that this Django project will be run in a Windows environment. However, for Linux, most of the steps are similar, except changes to some commands like the use of `sudo` and installation of redis-server.
   - The celery documentation contains helpful instructions to run celery on Linux environments.
-- A large number of products do not have readily available sku; scraping for this info was jettisoned.
+- A large number of products do not have readily available sku; hence scraping for this info was jettisoned.
 
 ### Admin panel
 You can use the credentials below to create an easy-to-remember superuser.
