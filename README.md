@@ -40,7 +40,13 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
     - Note that you might run into errors using celery with the above command on Windows due to multiprocessing limits. If this is the case, run celery instead as solo with the command `celery -A amazonProductLisiting worker -l info -P solo`.
   - Now, you need to start celery beat — which sends due tasks to the worker. To start beat:
     - Open another terminal or Windows PowerShell window with venv activated.
-    - Ensure you are in the root directory `amazonProductListing` and run the command `celery -A beat -l info`.
+    - Start celery beats
+      - Windows
+        - Ensure you are in the root directory `amazonProductListing` and run the command `celery -A beat -l info`.
+      - Linux
+        - See how to setup and start celery beats from the [official celery documentation](https://docs.celeryq.dev/en/latest/userguide/daemonizing.html#usage-systemd)
+
+        *note that you can manually scrap products of a brand using django admin (see note at the end of this documentation)*
     - The beat has been set to run every 6 hours (check the `settings.py` file to adjust this behaviour if desired).
 
 ## Web scraping implementation
