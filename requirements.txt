@@ -1,0 +1,8 @@
+Django
+celery
+django-celery-results
+django-celery-beat
+sqlalchemy
+redis
+requests
+beautifulsoup4

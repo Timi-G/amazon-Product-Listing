@@ -5,12 +5,18 @@ Ensure virtual environment (venv) is activated and install dependencies by the f
 - Navigate to Django root project directory in Windows Powershell.
 - If venv is not created, follow instructions to do so [here](https://docs.python.org/3/library/venv.html).
 - Activate venv with `.venv/Scripts/activate`.
-- Install Django with `pip install Django`.
-- Install celery with `pip install celery`.
-- Install results with `pip install django-celery-results`.
-- Install beat with `pip install django-celery-beat`.
-- Install sqlalchemy with `pip install sqlalchemy`.
-- Install broker with `pip install redis`.
+- Install dependencies
+  - From requirements.txt use 
+    - `pip install -r requirements.txt`
+  - Or install individual packages
+    - Install Django with `pip install Django`.
+    - Install celery with `pip install celery`.
+    - Install requests with `pip install requests`.
+    - Install Django with `pip install beautifulsoup4`.
+    - Install results with `pip install django-celery-results`.
+    - Install beat with `pip install django-celery-beat`.
+    - Install sqlalchemy with `pip install sqlalchemy`.
+    - Install broker with `pip install redis`.
 - After all installations, apply necessary migrations for the Django project with `python manage.py migrate`.
 
 To view the products of a brand through a minimalistic yet beautiful frontend, set up your system as follows:
@@ -32,8 +38,8 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
       - Run the command `./Redis-x64-3.0.504/redis-server`.
   - Linux
     - Kindly follow the steps in the official [redis website](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/)
-    - After successful installation, in case you are unable to start redis with `sudo` command, simply type `redis-server` in your terminal and enter to start the server.
-    - If redis still doesn't start after the above steps, maybe try checking your Linux distribution or switch to another os.
+    - After successful installation, in case you are unable to start redis with `sudo` command, simply type `redis-server` in your terminal and press 'enter' to start the server.
+    - If redis still doesn't start after the above steps, maybe try checking your Linux distribution or switch to another OS.
   - To start the celery worker:
     - Open another terminal or Windows PowerShell with venv activated (see how to activate venv in the previous section).
     - Ensure you are in the root directory `amazonProductListing` and start celery with the command `celery -A amazonProductListing worker -l info`.
