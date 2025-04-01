@@ -5,15 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="{% static 'styles.css' %}" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=At+Hauss&display=swap" rel="stylesheet">
   <title>Amazon Product Listing</title>
 </head>
 <body>
-  <div class="navbar bg-base-100">
-    <div class="flex-1 p-4">
-      <a class="btn w-10 rounded-full">Amazon Brands</a>
-    </div>
-    <div class="flex-none">
+  <div class="navbar bg-base-100 p-4">
+    <div class="flex-1">
+      <a class="bg-auto bg-gray-200 rounded-full m-2 p-2" href="{% url 'products_search' %}">Amazon Brands</a>
     </div>
   </div>
   {% block content %}

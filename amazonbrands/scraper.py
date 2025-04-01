@@ -7,7 +7,9 @@ import urllib.parse
 import requests
 from bs4 import BeautifulSoup
 
-def scrape_amazon_product_list(brand_name):
+from .models import Brand, Product
+
+def scrape_amazon_products(brand_name, save_db=True):
     main_headers = [
     {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3", "Accept-Language":"en-US, en:q=0.5"},
     {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36", "Accept-Language":"en-US, en:q=0.5"},
@@ -18,11 +20,16 @@ def scrape_amazon_product_list(brand_name):
     ]
     main_header = random.choice(main_headers)
     headers = scrape_user_agents("https://www.useragents.me/", main_header)
+    # print(headers)
     proxies = get_proxies("https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=text", main_header)
     if not headers:
         return None
     page_no = 1
     products = []
+
+    # initialize brand object if save_db is True
+    if save_db:
+        brand, created = Brand.objects.get_or_create(name=brand_name)
 
     while True:
         # print("Brand Page ", page_no)
@@ -39,9 +46,9 @@ def scrape_amazon_product_list(brand_name):
                     # 3. Get href of products
                     # Find all product containers (this selector may vary)
                     product_tags = soup.find_all('a', {
-                        'class': 'a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal'
+                        'class': 'a-link-normal'
                     }
-                                                 )
+                                                )
                     break
                 else:
                     return products
@@ -55,41 +62,96 @@ def scrape_amazon_product_list(brand_name):
             for _ in range(5):
                 header = random.choice(headers)
                 link = product_tag.get('href')
-                # print(link)
                 product_link, product_page = get_product_page(link,header)
-                # if product_page.status_code == 200:
-                product_page = BeautifulSoup(product_page.content, "html.parser")
                 try:
+                    parsed_product_page = BeautifulSoup(product_page.content, "html.parser")
                     # 5. Scrape product information
                     product_info = re.split('[/\\\\]', product_link)
-                    # name = product_page.find("span", {"class": "a-size-large product-title-word-break"}).get_text(strip=True)
                     name = product_info[3]
                     name = " ".join(re.split('[|,;-]',name))
-                    # print("Name", name)
                     asin = product_info[5]
-                    # print("ASIN", asin)
                     # sku = product_page.find("span", {"class": "sku"})  # This may vary by product or may not exist
                     page = product_link
-                    # print("page", page)
-                    image_url=product_page.find("div",{"class":"imgTagWrapper"}).find("img")['src']
 
-                    # image_url = product_page.find("ul", {"class":"a-unordered-list a-nostyle a-horizontal list maintain-height"}).find("img")['src']
-                    # print(f"image url {image_url}\n")
-                    # Update product information list
-                    products.append({
-                        'name': name,
-                        'asin': asin,
-                        'page': page,
-                        'image_url': image_url
-                    })
-                    break
+                    image_url=parsed_product_page.find("div", class_="imgTagWrapper").find("img")["src"]
+                    if image_url:
+                        product = {
+                            'name': name,
+                            'asin': asin,
+                            'page': page,
+                            'image_url': image_url
+                        }
+
+                        # Update product information list
+                        save_amazon_product_container(products, product)
+
+                        # Save product information in database
+                        if save_db:
+                            save_amazon_product_db(brand, product)
+
+                        # move to next product by breaking for-loop
+                        break
                 except IndexError:
-                    # print('Got Index Error')
                     sleep(2)
                 except AttributeError:
-                    # print('Got Attribute Error')
                     sleep(2)
             # 6. Repeat from step 4
+
+def save_amazon_product_db(brand, product):
+    asin = product.get('asin')
+
+    # Check if a product with this ASIN already exists
+    if not Product.objects.filter(asin=asin, brand=brand).exists():
+        # If it doesn't exist, create a new product entry
+        new_product=Product.objects.create(
+            name=product.get('name'),
+            asin=asin,
+            page=product.get('page'),
+            image=product.get('image_url'),
+            brand=brand
+        )
+        new_product.save()
+
+def save_amazon_product_container(container, product):
+    container.append({
+                        'name': product.get('name'),
+                        'asin': product.get('asin'),
+                        'page': product.get('page'),
+                    })
+
+def get_brand_page(brand,header,page_no):
+    brand_url = "https://www.amazon.com/s?k=" + brand + "&page=" + page_no
+    response = requests.get(brand_url, headers=header)
+    return response
+
+def get_product_page(product_href,header):
+    # Add protocol, domain, and subdomain to only product links that don't have a full address
+    if "sspa" in product_href:
+        product_url = extract_https_url(product_href)
+    elif "aax-us-iad" in product_href:
+        product_url = "www.amazon.com" + product_href
+        product_url = "https://www" + product_url.split("www")[-1]
+    elif product_href.startswith("/"):
+        product_url = "https://www.amazon.com" + product_href
+    else:
+        return None, None
+    # Handle links that have prefixes e.g. links of sponsored product posts
+    try:
+        response = requests.get(product_url, headers=header)
+        # print(response)
+    except:
+        return None, None
+    return product_url, response
+
+def scrape_user_agents(page_url, header):
+    response = requests.get(page_url, headers=header)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, "html.parser")
+        user_agents_tag = soup.find_all("textarea",{"class": "form-control ua-textarea"})
+    else:
+        return []
+    user_agents = [{"User-Agent": user_agent.get_text(strip=True), "Accept-Language":"en-US, en:q=0.5"} for user_agent in user_agents_tag]
+    return user_agents
 
 def extract_https_url(link):
     # Parse the URL to access its query parameters
@@ -106,35 +168,6 @@ def extract_https_url(link):
         return full_url
     else:
         return None  # Return None if 'url' parameter is not found
-
-
-def get_brand_page(brand,header,page_no):
-    brand_url = "https://www.amazon.com/s?k=" + brand + "&page=" + page_no
-    response = requests.get(brand_url, headers=header)
-    return response
-
-def get_product_page(product_href,headers):
-    # Add protocol, domain, and subdomain to only product links that don't have a full address
-    if "sspa" in product_href:
-        product_url = extract_https_url(product_href)
-    elif "aax-us-iad" in product_href:
-        product_url = "www.amazon.com" + product_href
-        product_url = "https://www" + product_url.split("www")[-1]
-    else:
-        product_url = "https://www.amazon.com" + product_href
-    # Handle links that have prefixes e.g. links of sponsored product posts
-    response = requests.get(product_url, headers=headers)
-    return product_url, response
-
-def scrape_user_agents(page_url, header):
-    response = requests.get(page_url, headers=header)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.content, "html.parser")
-        user_agents_tag = soup.find_all("textarea",{"class": "form-control ua-textarea"})
-    else:
-        return []
-    user_agents = [{"User-Agent": user_agent.get_text(strip=True), "Accept-Language":"en-US, en:q=0.5"} for user_agent in user_agents_tag]
-    return user_agents
 
 def get_proxies(api, header):
     response = requests.get(api, headers=header)

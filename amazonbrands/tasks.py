@@ -1,11 +1,11 @@
 # amazonbrands/tasks.py
 from celery import shared_task
 from .models import Brand, Product
-from amazonbrands.scraper import scrape_amazon_product_list
+from amazonbrands.scraper import scrape_amazon_products
 
 
 @shared_task
-def scrape_amazon_products_for_all_brands():
+def scrape_amazon_products_for_all_brands_db():
     """
     Task to scrape Amazon products for each brand in the database.
     """
@@ -16,21 +16,7 @@ def scrape_amazon_products_for_all_brands():
         # Call a helper function to scrape products for the specific brand
         scrape_amazon_products(brand_name)
 
-def scrape_amazon_products(brand_name):
-    products = scrape_amazon_product_list(brand_name)
-    brand, created = Brand.objects.get_or_create(name=brand_name)
-    for product in products:
-        # Save the product data to the database or take any required action
-        asin = product.get('asin')
-
-        # Check if a product with this ASIN already exists
-        if not Product.objects.filter(asin=asin, brand=brand).exists():
-            # If it doesn't exist, create a new product entry
-            new_product=Product.objects.create(
-                name=product.get('name'),
-                asin=asin,
-                page=product.get('page'),
-                image=product.get('image_url'),
-                brand=brand
-            )
-            new_product.save()
+def save_amazon_brand_container(container, brand_name, products):
+    brands = container
+    if brand_name not in brands:
+        brands[brand_name]=products

@@ -1,49 +1,41 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <div class="relative p-4">
     {#searchbar#}
-    <div class="flex w-120">
-        <form method="GET" action="{% url 'products_search' %}">
-            <label class="input input-bordered flex items-center gap-2 p-4 m-4">
-              <input
-                type="text" class="grow" placeholder="Search brand name ..." name="brand_name" value="{{ request.GET.brand_name|default_if_none:'' }}"/>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                class="h-4 w-4 opacity-70">
-                <path
-                  fill-rule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clip-rule="evenodd" />
-              </svg>
-            </label>
-        </form>
+    <div class="static w-120">
+      <form method="GET" action="{% url 'products_search' %}">
+        <label class="input">
+          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
+          <input type="search" required placeholder="Search brand name ..." name="brand_name" value="{{ request.GET.brand_name|default_if_none:'' }}"/>
+        </label>
+      </form>
     </div>
 
     {# Product Listing #}
-    <div class="flex flex-col p-10">
-        <h1 class="text-3xl font-bold mb-6">{{ brand_name }} Products</h1>
-        <div class="row grid justify-center place-items-center grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 gap-8 m-4 p-5">    
-            {% for product in products %}
-              <div class="card card-compact bg-base-100 w-96 shadow-xl">
-                <figure>
-                  <img
-                    src="{{ product.image }}"
-                    alt="{{ product.name }}"
-                    class="rounded-md m-4"/>
-                </figure>
-                <div class="card-body">
-                  <h2 class="card-title">{{ product.name }}</h2>
-                  <p> Amazon Standard Identification Number: {{ product.asin }}</p>
-                  <div class="card-actions justify-end">
-                    <a class="btn btn-primary" href="{{ product.page }}">Buy Now</a>
-                  </div>
-                </div>
+    <div class="static flex flex-col pt-10">
+      <h1 class="text-3xl font-bold mb-6">{{ brand_name }} Products</h1>
+      <div class="row grid grid-cols-3 lg:grid-cols-4 sm:grid-cols-2 gap-8 m-4">    
+        {% for product in products %}
+          <div class="card card-compact bg-base-100 shadow-xl">
+            <figure>
+              <img
+                src="{{ product.image }}"
+                alt="{{ product.name }}"
+                class="rounded-md m-4 p-4"/>
+            </figure>
+            <div class="card-body">
+              <h2 class="card-title">{{ product.name }}</h2>
+              <p> Amazon Standard Identification Number: {{ product.asin }}</p>
+              <div class="card-actions justify-end">
+                <a class="btn btn-primary" href="{{ product.page }}">Buy Now</a>
               </div>
-            {% empty %}
-              <p>No products found for this brand.</p>
-            {% endfor %}
-        </div>
+            </div>
+          </div>
+        {% empty %}
+          <p>No products found for this brand.</p>
+        {% endfor %}
+      </div>
     </div>
+  </div>
 {% endblock %}

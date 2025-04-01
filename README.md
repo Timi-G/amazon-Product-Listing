@@ -29,9 +29,9 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
 - Make sure to create a new superuser account with `python manage.py createsuperuser`.
 - To go to the admin panel for your Django website:
   - Run `python manage.py runserver` in terminal.
-  - Enter in the link `localhost/admin` into your browser (note that your localhost will display in terminal).
+  - Enter in the link `{localhost}/admin` into your browser (note that your localhost will display in terminal e.g. http://127.0.0.1:8000/admin).
   - Create new brands in 'Brands' like Nike, Microsoft, et cetera.
-- To utilize scheduling and periodic tasking:
+- To utilize scheduling and periodic tasking, open a new terminal:
   - Windows
     - First, start your broker. The redis application — which is the broker used for this project — has already been made available; simply run it this way:
       - Navigate to the root directory in your terminal.
@@ -43,17 +43,30 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
   - To start the celery worker:
     - Open another terminal or Windows PowerShell with venv activated (see how to activate venv in the previous section).
     - Ensure you are in the root directory `amazonProductListing` and start celery with the command `celery -A amazonProductListing worker -l info`.
-    - Note that you might run into errors using celery with the above command on Windows due to multiprocessing limits. If this is the case, run celery instead as solo with the command `celery -A amazonProductLisiting worker -l info -P solo`.
+    - Note that you might run into errors using celery with the above command on Windows due to multiprocessing limits. If this is the case, run celery instead as solo with the command `celery -A amazonProductListing worker -l info -P solo`.
   - Now, you need to start celery beat — which sends due tasks to the worker. To start beat:
-    - Open another terminal or Windows PowerShell window with venv activated.
     - Start celery beats
-      - Windows
-        - Ensure you are in the root directory `amazonProductListing` and run the command `celery -A beat -l info`.
-      - Linux
-        - See how to setup and start celery beats from the [official celery documentation](https://docs.celeryq.dev/en/latest/userguide/daemonizing.html#usage-systemd)
+      - Open Django Admin Panel (/admin).
+
+      - Navigate to "Periodic Tasks".
+
+      - Click "Add Periodic Task":
+
+      - You can name Periodic Task as you wish, e.g Scrape Amazon Products Every 6 Hours
+
+      - Task: amazonbrands.tasks.scrape_amazon_products_for_all_brands
+
+      - Schedule Type: Interval
+
+      - Every: 6
+
+      - Period: Hours
+
+      - All other arguments can be left empty
+
+      - Save
 
         *note that you can manually scrap products of a brand using django admin (see note at the end of this documentation)*
-    - The beat has been set to run every 6 hours (check the `settings.py` file to adjust this behaviour if desired).
 
 ## Web scraping implementation
 - Firstly, the scraper visits `amazon.com` and gets the URL of products of the specific brands defined in the admin panel, taking pagination into consideration.
