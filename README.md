@@ -6,9 +6,9 @@ Ensure virtual environment (venv) is activated and install dependencies by the f
 - If venv is not created, follow instructions to do so [here](https://docs.python.org/3/library/venv.html).
 - Activate venv with `.venv/Scripts/activate`.
 - Install dependencies
-  - From requirements.txt use 
+  - From requirements.txt use:
     - `pip install -r requirements.txt`
-  - Or install individual packages
+  - Alternatively, install individual packages:
     - Install Django with `pip install Django`.
     - Install celery with `pip install celery`.
     - Install requests with `pip install requests`.
@@ -39,7 +39,7 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
   - Linux
     - Kindly follow the steps in the official [redis website](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/)
     - After successful installation, in case you are unable to start redis with `sudo` command, simply type `redis-server` in your terminal and press 'enter' to start the server.
-    - If redis still doesn't start after the above steps, maybe try checking your Linux distribution or switch to another OS.
+    - If redis still doesn't start after the above steps, maybe try checking your Linux distribution or try using Docker.
   - To start the celery worker:
     - Open another terminal or Windows PowerShell with venv activated (see how to activate venv in the previous section).
     - Ensure you are in the root directory `amazonProductListing` and start celery with the command `celery -A amazonProductListing worker -l info`.
@@ -50,16 +50,16 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
       - Navigate to "Periodic Tasks".
       - Click "Add Periodic Task":
       - You can name Periodic Task as you wish, e.g Scrape Amazon Products Every 6 Hours
-      - Task: amazonbrands.tasks.scrape_amazon_products_for_all_brands
+      - Task: "amazonbrands.tasks.scrape_amazon_products_for_all_brands_db"
       - Schedule Type: Interval
       - Every: 6 (or your preferred figure)
       - Period: Hours (or your preferred period)
-      - Ensure to include 'start time'
+      - You can include 'start time'
       - All other arguments can be left empty
       - Save
     - Alternatively, start celery beat in terminal:
       - Open another terminal or Windows PowerShell ensuring venv activated
-      - From the amazonProductListing root directory, run `celery -A amazonbrands beat --loglevel=info` in the terminal
+      - From the amazonProductListing root directory, run `celery -A amazonProductListing beat -l info` in the terminal
 
         *note that you can manually scrap products of a brand using django admin (see note at the end of this documentation)*
 
