@@ -85,7 +85,7 @@ def scrape_amazon_products(brand_name, save_db=True):
                     page = product_link
 
                     image_url = parsed_product_page.find("div", class_="imgTagWrapper").find("img")["src"]
-                    if len(asin)<20 and image_url:
+                    if len(name)>5 and len(asin)<20 and image_url:
                         product = {
                             'name': name,
                             'asin': asin,
