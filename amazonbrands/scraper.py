@@ -24,7 +24,9 @@ def scrape_amazon_products(brand_name, save_db=True):
     proxies = get_proxies("https://api.proxyscrape.com/v4/free-proxy-list/get?request=display_proxies&proxy_format=protocolipport&format=text", main_header)
     if not headers:
         return None
+    
     page_no = 1
+    last_page_no = 1
     products = []
 
     # initialize brand object if save_db is True
@@ -32,8 +34,10 @@ def scrape_amazon_products(brand_name, save_db=True):
         brand, created = Brand.objects.get_or_create(name=brand_name)
 
     while True:
-        # print("Brand Page ", page_no)
-        # 5 retries for brand page
+        # stop scraping for brand when all pages have been visited
+        if page_no > last_page_no:
+            return products
+        # Do 5 retries for brand page
         for _ in range(5):
             header = random.choice(headers)
             try:
@@ -41,22 +45,29 @@ def scrape_amazon_products(brand_name, save_db=True):
                 brand_page = get_brand_page(brand_name, header, str(page_no))
 
                 # 2. Get all products in brand page
-                if brand_page.status_code == 200:
-                    soup = BeautifulSoup(brand_page.content, "html.parser")
-                    # 3. Get href of products
-                    # Find all product containers (this selector may vary)
-                    product_tags = soup.find_all('a', {
-                        'class': 'a-link-normal'
-                    }
-                                                )
-                    break
-                else:
-                    return products
+                soup = BeautifulSoup(brand_page.content, "html.parser")
+                # 3. Get href of products
+                # Find all product containers (this selector may vary)
+                product_tags = soup.find_all('a', {
+                    'class': 'a-link-normal'
+                }
+                                            )
+
+                # get last page number for brand
+                if page_no == 1:
+                    last_page_tag = soup.find("span", class_="s-pagination-item s-pagination-disabled")
+                    if last_page_tag:
+                        last_page_no = int(last_page_tag.text.strip())
+                
+                # stop retries since brand page successfully retrieved
+                break
             except:
                 sleep(2)
 
         # Pagination
+        # increase page_no
         page_no += 1
+
         # 4. Go to each product page
         for product_tag in product_tags:
             for _ in range(5):
@@ -73,8 +84,8 @@ def scrape_amazon_products(brand_name, save_db=True):
                     # sku = product_page.find("span", {"class": "sku"})  # This may vary by product or may not exist
                     page = product_link
 
-                    image_url=parsed_product_page.find("div", class_="imgTagWrapper").find("img")["src"]
-                    if image_url:
+                    image_url = parsed_product_page.find("div", class_="imgTagWrapper").find("img")["src"]
+                    if len(asin)<20 and image_url:
                         product = {
                             'name': name,
                             'asin': asin,
@@ -120,7 +131,7 @@ def save_amazon_product_container(container, product):
                     })
 
 def get_brand_page(brand,header,page_no):
-    brand_url = "https://www.amazon.com/s?k=" + brand + "&page=" + page_no
+    brand_url = "https://www.amazon.com/s?rh=p_89%3A" + brand + "&page=" + page_no
     response = requests.get(brand_url, headers=header)
     return response
 

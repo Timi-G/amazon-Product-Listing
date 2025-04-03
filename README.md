@@ -44,27 +44,22 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
     - Open another terminal or Windows PowerShell with venv activated (see how to activate venv in the previous section).
     - Ensure you are in the root directory `amazonProductListing` and start celery with the command `celery -A amazonProductListing worker -l info`.
     - Note that you might run into errors using celery with the above command on Windows due to multiprocessing limits. If this is the case, run celery instead as solo with the command `celery -A amazonProductListing worker -l info -P solo`.
-  - Now, you need to start celery beat — which sends due tasks to the worker. To start beat:
-    - Start celery beats
+  - Now, you need to start celery beat which sends due tasks to the worker.
+    - To start celery beats
       - Open Django Admin Panel (/admin).
-
       - Navigate to "Periodic Tasks".
-
       - Click "Add Periodic Task":
-
       - You can name Periodic Task as you wish, e.g Scrape Amazon Products Every 6 Hours
-
       - Task: amazonbrands.tasks.scrape_amazon_products_for_all_brands
-
       - Schedule Type: Interval
-
-      - Every: 6
-
-      - Period: Hours
-
+      - Every: 6 (or your preferred figure)
+      - Period: Hours (or your preferred period)
+      - Ensure to include 'start time'
       - All other arguments can be left empty
-
       - Save
+    - Alternatively, start celery beat in terminal:
+      - Open another terminal or Windows PowerShell ensuring venv activated
+      - From the amazonProductListing root directory, run `celery -A amazonbrands beat --loglevel=info` in the terminal
 
         *note that you can manually scrap products of a brand using django admin (see note at the end of this documentation)*
 
@@ -97,4 +92,4 @@ You can use the credentials below to create an easy-to-remember superuser.
 - Email: admin@mail.com
 - Password: admin
 
-**Note:  For manual scrape operations, use the actions navigation bar (navbar) at the top of the 'Admin Brands' page in the admin panel to scrape products of specific brands.**
+**Note:  For manual scrape operations, use the actions dropdown feature at the top of the 'Admin Brands' page in the admin panel to scrape products of specific brands. Simply select brands you want to scrape for and choose action 'Scrape products for selected brands'**

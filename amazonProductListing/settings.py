@@ -121,12 +121,6 @@ USE_TZ = True
 # celery settings
 result_backend = 'redis://localhost/0'
 CELERY_BROKER_URL = 'redis://localhost:6379/0'  # URL of the Redis server
-CELERY_BEAT_SCHEDULE = {
-    'scrape-products-every-6-hours': {
-        'task': 'amazonbrands.tasks.scrape_amazon_products_for_all_brands',
-        'schedule': 6 * 60 * 60,  # Run every 6/24 hours
-    },
-}
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 
