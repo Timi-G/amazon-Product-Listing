@@ -72,7 +72,7 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
 
 ## Code execution and frontend viewership
 To run the Django website:
-- Run command `npm run dev` in a terminal with venv activated to utilize `_daisyUI_`.
+- Run command `npm run dev` in a terminal with venv activated to utilize `DaisyUI`.
 - Run `python manage.py runserver` in another terminal with venv activated to start the development server.
 - Navigate to the link of the localhost on your browser (again, note that your localhost will display in terminal);
   - A sample localhost link (which will direct to the homepage) looks like this: `http://127.0.0.1/8000`.
