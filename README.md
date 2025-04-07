@@ -40,26 +40,26 @@ To view the products of a brand through a minimalistic yet beautiful frontend, s
     - Kindly follow the steps in the official [redis website](https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/)
     - After successful installation, in case you are unable to start redis with `sudo` command, simply type `redis-server` in your terminal and press 'enter' to start the server.
     - If redis still doesn't start after the above steps, maybe try checking your Linux distribution or try using Docker.
-  - To start the celery worker:
-    - Open another terminal or Windows PowerShell with venv activated (see how to activate venv in the previous section).
-    - Ensure you are in the root directory `amazonProductListing` and start celery with the command `celery -A amazonProductListing worker -l info`.
-    - Note that you might run into errors using celery with the above command on Windows due to multiprocessing limits. If this is the case, run celery instead as solo with the command `celery -A amazonProductListing worker -l info -P solo`.
-  - Now, you need to start celery beat which sends due tasks to the worker.
-    - To start celery beats
-      - Open Django Admin Panel (/admin).
-      - Navigate to "Periodic Tasks".
-      - Click "Add Periodic Task":
-      - You can name Periodic Task as you wish, e.g Scrape Amazon Products Every 6 Hours
-      - Task: "amazonbrands.tasks.scrape_amazon_products_for_all_brands_db"
-      - Schedule Type: Interval
-      - Every: 6 (or your preferred figure)
-      - Period: Hours (or your preferred period)
-      - You can include 'start time'
-      - All other arguments can be left empty
-      - Save
-    - Alternatively, start celery beat in terminal:
-      - Open another terminal or Windows PowerShell ensuring venv activated
-      - From the amazonProductListing root directory, run `celery -A amazonProductListing beat -l info` in the terminal
+- To start the celery worker:
+  - Open another terminal or Windows PowerShell with venv activated (see how to activate venv in the previous section).
+  - Ensure you are in the root directory `amazonProductListing` and start celery with the command `celery -A amazonProductListing worker -l info`.
+  - Note that you might run into errors using celery with the above command on Windows due to multiprocessing limits. If this is the case, run celery instead as solo with the command `celery -A amazonProductListing worker -l info -P solo`.
+- Now, you need to start celery beat which sends due tasks to the worker.
+  - To start celery beats
+    - Open Django Admin Panel (/admin).
+    - Navigate to "Periodic Tasks".
+    - Click "Add Periodic Task":
+    - You can name Periodic Task as you wish, e.g Scrape Amazon Products Every 6 Hours
+    - Task: "amazonbrands.tasks.scrape_amazon_products_for_all_brands_db"
+    - Schedule Type: Interval
+    - Every: 6 (or your preferred figure)
+    - Period: Hours (or your preferred period)
+    - You can include 'start time'
+    - All other arguments can be left empty
+    - Save
+  - Alternatively, start celery beat in terminal:
+    - Open another terminal or Windows PowerShell ensuring venv activated
+    - From the amazonProductListing root directory, run `celery -A amazonProductListing beat -l info` in the terminal
 
         *note that you can manually scrap products of a brand using django admin (see note at the end of this documentation)*
 
@@ -76,8 +76,8 @@ To run the Django website:
 - Run `python manage.py runserver` in another terminal with venv activated to start the development server.
 - Navigate to the link of the localhost on your browser (again, note that your localhost will display in terminal);
   - A sample localhost link (which will direct to the homepage) looks like this: `http://127.0.0.1/8000`.
-- `localhost/products` will direct you to the products page.
-- The search bar can also be used to search for the products of brands already saved in the database.
+- `{localhost}/products` will direct you to the products page.
+- The search bar can be used to search for the products of brands already saved in the database.
 
 ## Any assumptions or design decisions
 - The code was written with Python 3.12 and should run successfully on any Python 3.1x version.
